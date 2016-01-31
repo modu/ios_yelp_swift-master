@@ -19,13 +19,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     var searchController: UISearchController!
 
     
-    let data = ["New York, NY", "Los Angeles, CA", "Chicago, IL", "Houston, TX",
-        "Philadelphia, PA", "Phoenix, AZ", "San Diego, CA", "San Antonio, TX",
-        "Dallas, TX", "Detroit, MI", "San Jose, CA", "Indianapolis, IN",
-        "Jacksonville, FL", "San Francisco, CA", "Columbus, OH", "Austin, TX",
-        "Memphis, TN", "Baltimore, MD", "Charlotte, ND", "Fort Worth, TX"]
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
@@ -50,7 +43,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         // you just need to set the titleView to be the search bar
         navigationItem.titleView = searchBar
         
-        searchDisplayController?.displaysSearchBarInNavigationBar = true
+        //searchDisplayController?.displaysSearchBarInNavigationBar = true
         
         searchController.searchBar.sizeToFit()
         navigationItem.titleView = searchController.searchBar
@@ -102,15 +95,29 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
-        cell.business = businesses[indexPath.row]
+        cell.business = businesses[indexPath.row] /*Crash here array index out of range*/
         return cell
     }
  
     func updateSearchResultsForSearchController(searchController: UISearchController) {
+        
         if let searchText = searchController.searchBar.text {
-            filteredData = searchText.isEmpty ? data : data.filter({(dataString: String) -> Bool in
-                return dataString.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+//            Business.searchWithTerm(searchText, sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
+//                self.businesses = businesses
+//                NSLog("Hi in search ")
+//            }
+            Business.searchWithTerm(searchText, completion: { (businesses: [Business]!, error: NSError!) -> Void in
+                self.businesses = businesses
+                
+                self.tableView.reloadData()
+                for business in businesses {
+                    print(business.name!)
+                    print(business.address!)
+                }
             })
+//            filteredData = searchText.isEmpty ? data : data.filter({(dataString: String) -> Bool in
+//                return dataString.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+//            })
             
             tableView.reloadData()
         }
