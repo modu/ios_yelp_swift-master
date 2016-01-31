@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import MBProgressHUD
+
 //UISearchResultsUpdating
 class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate ,UISearchResultsUpdating {
 
@@ -21,6 +23,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -74,6 +78,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
 */
+        // Hide HUD once network request comes back (must be done on main UI thread)
+        MBProgressHUD.hideHUDForView(self.view, animated: true)
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -100,7 +107,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
  
     func updateSearchResultsForSearchController(searchController: UISearchController) {
-        
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+
         if let searchText = searchController.searchBar.text {
 //            Business.searchWithTerm(searchText, sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
 //                self.businesses = businesses
@@ -118,7 +126,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 //            filteredData = searchText.isEmpty ? data : data.filter({(dataString: String) -> Bool in
 //                return dataString.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
 //            })
-            
+            // Hide HUD once network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+
             tableView.reloadData()
         }
     }
